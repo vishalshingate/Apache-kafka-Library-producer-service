@@ -19,7 +19,6 @@ public class LibraryEventsController {
     @PostMapping( "/v1/libraryevent")
     public ResponseEntity<LibraryEvent> postLibraryEvent(@RequestBody LibraryEvent libraryEvent) {
 
-        // Process the library event (e.g., send to Kafka)
 
         log.info("libraryEvent: {} ", libraryEvent);
         return ResponseEntity.status(HttpStatus.CREATED).body(libraryEvent);

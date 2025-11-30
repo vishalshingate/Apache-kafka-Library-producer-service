@@ -1,6 +1,6 @@
 Spring:
   profiles:
-    active: dev
+    active: prod
   kafka:
     producer:
       bootstrap-servers: kafka:9092,kafka:9093,kafka:9094
