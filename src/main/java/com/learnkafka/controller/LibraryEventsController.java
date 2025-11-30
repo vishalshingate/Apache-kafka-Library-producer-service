@@ -1,0 +1,27 @@
+package com.learnkafka.controller;
+
+import com.learnkafka.dto.LibraryEvent;
+import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
+@Slf4j
+public class LibraryEventsController {
+
+    private static final Logger logger = LoggerFactory.getLogger(LibraryEventsController.class);
+
+    @PostMapping( "/v1/libraryevent")
+    public ResponseEntity<LibraryEvent> postLibraryEvent(@RequestBody LibraryEvent libraryEvent) {
+
+        // Process the library event (e.g., send to Kafka)
+
+        log.info("libraryEvent: {} ", libraryEvent);
+        return ResponseEntity.status(HttpStatus.CREATED).body(libraryEvent);
+    }
+}
