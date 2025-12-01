@@ -35,7 +35,8 @@ public class LibraryEventsController {
 
         logger.info("libraryEvent: {} ", libraryEvent);
         //libraryEventProducer.sendLibraryEvent(libraryEvent);
-        libraryEventProducer.sendLibraryEventSync(libraryEvent);
+        //libraryEventProducer.sendLibraryEventSync(libraryEvent);
+        libraryEventProducer.sendLibraryEventAsyncApproach_2(libraryEvent);
         logger.info("After sending libraryEvent");
         return ResponseEntity.status(HttpStatus.CREATED).body(libraryEvent);
     }
