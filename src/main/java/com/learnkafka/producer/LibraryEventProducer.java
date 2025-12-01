@@ -12,6 +12,8 @@ import org.springframework.kafka.support.SendResult;
 import org.springframework.stereotype.Component;
 
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeoutException;
 
 @Component
 @Slf4j
@@ -31,12 +33,21 @@ public class LibraryEventProducer {
         this.objectMapper = objectMapper;
     }
 
-
+    /**
+     * This is an async call
+     * @param libraryEvent
+     * @return
+     * @throws JsonProcessingException
+     */
     public CompletableFuture<SendResult<Integer,String>> sendLibraryEvent(LibraryEvent libraryEvent) throws JsonProcessingException {
         var key = libraryEvent.libraryEventId();
         var value = objectMapper.writeValueAsString(libraryEvent);
-        var completableFuture = kafkaTemplate.send(topicName,key, value);
 
+       /**  *
+        * 1.blocking call - get metadata about the kafka cluster (only first request/ after that will have metadata unless it not refreshed)
+        * 2.send message async - return a completable future
+        */
+        var completableFuture = kafkaTemplate.send(topicName,key, value);
       return completableFuture
             .whenComplete((sendResult, throwable) -> {
                 if (throwable != null) {
@@ -46,6 +57,31 @@ public class LibraryEventProducer {
                     handleSuccess(key, value, sendResult);
                 }
             });
+
+    }
+
+    /**
+     * This is an Sync call
+     * @param libraryEvent
+     * @return
+     * @throws JsonProcessingException
+     */
+    public SendResult<Integer,String> sendLibraryEventSync(LibraryEvent libraryEvent)
+        throws JsonProcessingException, ExecutionException, InterruptedException, TimeoutException {
+        var key = libraryEvent.libraryEventId();
+        var value = objectMapper.writeValueAsString(libraryEvent);
+
+        /**  *
+         * 1.blocking call - get metadata about the kafka cluster (only first request/ after that will have metadata unless it not refreshed)
+         * 2.block and wait until the message is sent to kafka topic - synchronous call
+         */
+
+        var sendResult = kafkaTemplate.send(topicName,key, value)
+            //.get(); you can wait like this also
+            .get(5, java.util.concurrent.TimeUnit.SECONDS);
+        handleSuccess(key, value, sendResult);
+
+        return sendResult;
 
     }
 
