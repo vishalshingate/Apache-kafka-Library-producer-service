@@ -3,6 +3,7 @@ package com.learnkafka.controller;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.learnkafka.dto.LibraryEvent;
 import com.learnkafka.producer.LibraryEventProducer;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
@@ -29,7 +30,7 @@ public class LibraryEventsController {
     }
 
     @PostMapping( "/v1/libraryevent")
-    public ResponseEntity<LibraryEvent> postLibraryEvent(@RequestBody  LibraryEvent libraryEvent)
+    public ResponseEntity<LibraryEvent> postLibraryEvent(@RequestBody  @Valid LibraryEvent libraryEvent)
         throws JsonProcessingException, ExecutionException, InterruptedException, TimeoutException {
 
 

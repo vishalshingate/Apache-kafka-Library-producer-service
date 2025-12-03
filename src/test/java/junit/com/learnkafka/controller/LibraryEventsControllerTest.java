@@ -46,4 +46,20 @@ class LibraryEventsControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
             ).andExpect(status().isCreated());
     }
+
+    @Test
+    void postLibraryEventInvalidValues() throws Exception {
+
+
+        var json = objectMapper.writeValueAsString(TestUtil.libraryEventRecordWithInvalidBook());
+
+        when(libraryEventProducer.sendLibraryEventAsyncApproach_2(isA(LibraryEvent.class)))
+            .thenReturn(null);
+
+        mockMvc.
+            perform(MockMvcRequestBuilders.post("/v1/libraryevent")
+                .content(json)
+                .contentType(MediaType.APPLICATION_JSON)
+            ).andExpect(status().is4xxClientError());
+    }
 }
