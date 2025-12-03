@@ -17,6 +17,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.isA;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 //Test slice
@@ -52,7 +53,7 @@ class LibraryEventsControllerTest {
 
 
         var json = objectMapper.writeValueAsString(TestUtil.libraryEventRecordWithInvalidBook());
-
+        var expectedErrorMessage = "book.bookId - must not be null" ;
         when(libraryEventProducer.sendLibraryEventAsyncApproach_2(isA(LibraryEvent.class)))
             .thenReturn(null);
 
@@ -60,6 +61,7 @@ class LibraryEventsControllerTest {
             perform(MockMvcRequestBuilders.post("/v1/libraryevent")
                 .content(json)
                 .contentType(MediaType.APPLICATION_JSON)
-            ).andExpect(status().is4xxClientError());
+            ).andExpect(status().is4xxClientError()
+            ).andExpect(content().string(expectedErrorMessage));
     }
 }
